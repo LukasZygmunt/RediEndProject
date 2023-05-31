@@ -21,7 +21,21 @@ landsbergAmLech = requests.get(create_host(landsbergAmLech_geo))
 pfaffenhofenAnDerInn = requests.get(create_host(pfaffenhofenAnDerInn_geo))
 haagInOberbayern = requests.get(create_host(haagInOberbayern_geo))
 
+# run
+if __name__ == "__main__":
+    pass
 
+munich_json = munich.json()
+munich_file = "munich.json"
+
+city_list = {}
+city_list
+
+# status escape must to be
+if munich.status_code == 200:
+    json.dump(munich_json, open(munich_file, "w", encoding="utf-8"), indent=4, sort_keys=True)
+else:
+    raise ConnectionError(f"{create_host(munich_geo)} replied with {munich.status_code}: {munich.reason}")
 
 
 
