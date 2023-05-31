@@ -1,6 +1,12 @@
 
 import requests as requests
 
+def create_host(city_geo):
+    latitude = city_geo[0]
+    longitude = city_geo[1]
+    host = f"https://api.open-meteo.com/v1/forecast?latitude={latitude}&longitude={longitude}&hourly=temperature_2m,precipitation,rain,showers,snowfall,cloudcover,windspeed_10m,winddirection_10m&daily=temperature_2m_max,temperature_2m_min,rain_sum,showers_sum,snowfall_sum,windspeed_10m_max,windgusts_10m_max,winddirection_10m_dominant&forecast_days=3&timezone=Europe%2FBerlin"
+    return host
+
 
 # geo
 munich_geo = (48.15, 11.42)
