@@ -1,5 +1,7 @@
-
+import json
+import logging
 import requests as requests
+
 
 def create_host(city_geo):
     latitude = city_geo[0]
@@ -8,34 +10,47 @@ def create_host(city_geo):
     return host
 
 
-# geo
-munich_geo = (48.15, 11.42)
-badToelz_geo = (47.76, 11.56)
-landsbergAmLech_geo = (48.05, 10.88)
-pfaffenhofenAnDerInn_geo = (48.53, 11.51)
-haagInOberbayern_geo = (48.16, 12.18)
+def create_file(city: str):
+    file_name = f"{city}.json"
 
-munich = requests.get(create_host(munich_geo))
-badToelz = requests.get(create_host(badToelz_geo))
-landsbergAmLech = requests.get(create_host(landsbergAmLech_geo))
-pfaffenhofenAnDerInn = requests.get(create_host(pfaffenhofenAnDerInn_geo))
-haagInOberbayern = requests.get(create_host(haagInOberbayern_geo))
+    def return_city_r():
+        for key, value in city_requests_dict.items():
+            if key == city:
+                return value
+    if return_city_r().status_code == 200:
+        json.dump(return_city_r().json(), open(file_name, "w", encoding="utf-8"), indent=4, sort_keys=True)
+        print(f"[INFO]File {file_name} is created")
+        logging.info(f"[INFO]File {file_name} is created")
+    else:
+        raise ConnectionError(f"{create_host(city)} replied with {return_city_r().status_code}: {return_city_r().reason}")
+    return ""
+
 
 # run
 if __name__ == "__main__":
     pass
 
-munich_json = munich.json()
-munich_file = "munich.json"
+# geo
+munich = (48.15, 11.42)
+badToelz = (47.76, 11.56)
+landsbergAmLech = (48.05, 10.88)
+pfaffenhofenAnDerInn = (48.53, 11.51)
+haagInOberbayern = (48.16, 12.18)
 
-city_list = {}
-city_list
+#requests
+munich_r = requests.get(create_host(munich))
+badToelz_r = requests.get(create_host(badToelz))
+landsbergAmLech_r = requests.get(create_host(landsbergAmLech))
+pfaffenhofenAnDerInn_r = requests.get(create_host(pfaffenhofenAnDerInn))
+haagInOberbayern_r = requests.get(create_host(haagInOberbayern))
 
-# status escape must to be
-if munich.status_code == 200:
-    json.dump(munich_json, open(munich_file, "w", encoding="utf-8"), indent=4, sort_keys=True)
-else:
-    raise ConnectionError(f"{create_host(munich_geo)} replied with {munich.status_code}: {munich.reason}")
+# lists and dictionaries
+city_requests_list = [munich_r, badToelz_r, landsbergAmLech_r, pfaffenhofenAnDerInn_r, haagInOberbayern_r]
+city_requests_dict = {"munich" : munich_r,
+                      "badToelz" : badToelz_r,
+                      "landsbergAmLech" : landsbergAmLech_r,
+                      "pfaffenhofenAnDerInn" : pfaffenhofenAnDerInn_r,
+                      "haagInOberbayern" : haagInOberbayern_r
+                      }
 
-
-
+print(create_file("munich"))
