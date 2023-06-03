@@ -3,6 +3,31 @@ import logging
 import requests as requests
 
 
+def input_new_city_geo():
+    city_geo_latitude = float(input("please input latitude e.g. 48.15: "))
+    city_geo_longitude = float(input("please input longitude e.g. 11.42: "))
+    city_geo = (city_geo_latitude, city_geo_longitude)
+    return city_geo
+
+
+def input_city_name():
+    city_name = str(input("please put new name of place: "))
+    return city_name
+
+
+def add_to_dict():
+    city_requests_dict[input_city_name()] = requests.get(create_host(input_new_city_geo()))
+
+
+def print_dict(dict):
+    for key, value in dict.items():
+        print(f"{key} = {value}")
+
+
+def create_geo(latitude, longitude):
+    return (latitude, longitude)
+
+
 def create_host(city_geo):
     latitude = city_geo[0]
     longitude = city_geo[1]
@@ -54,3 +79,5 @@ city_requests_dict = {"munich" : munich_r,
                       }
 
 print(create_file("munich"))
+add_to_dict()
+print_dict(city_requests_dict)
