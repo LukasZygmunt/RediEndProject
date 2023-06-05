@@ -31,7 +31,8 @@ def create_geo(latitude, longitude):
 def create_host(city_geo):
     latitude = city_geo[0]
     longitude = city_geo[1]
-    host = f"https://api.open-meteo.com/v1/forecast?latitude={latitude}&longitude={longitude}&hourly=temperature_2m,precipitation,rain,showers,snowfall,cloudcover,windspeed_10m,winddirection_10m&daily=temperature_2m_max,temperature_2m_min,rain_sum,showers_sum,snowfall_sum,windspeed_10m_max,windgusts_10m_max,winddirection_10m_dominant&forecast_days=3&timezone=Europe%2FBerlin"
+    #host = f"https://api.open-meteo.com/v1/forecast?latitude={latitude}&longitude={longitude}&hourly=temperature_2m,precipitation,rain,showers,snowfall,cloudcover,windspeed_10m,winddirection_10m&daily=temperature_2m_max,temperature_2m_min,rain_sum,showers_sum,snowfall_sum,windspeed_10m_max,windgusts_10m_max,winddirection_10m_dominant&forecast_days=3&timezone=Europe%2FBerlin"
+    host = f"https://api.open-meteo.com/v1/forecast?latitude={latitude}&longitude={longitude}&hourly=temperature_2m,precipitation,cloudcover,windspeed_10m,winddirection_10m&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_hours,windspeed_10m_max,winddirection_10m_dominant&current_weather=true&forecast_days=3&timezone=Europe%2FBerlin"
     return host
 
 
@@ -49,6 +50,44 @@ def create_file(city: str):
     else:
         raise ConnectionError(f"{create_host(city)} replied with {return_city_r().status_code}: {return_city_r().reason}")
     return ""
+
+
+def choose_directory(start_place, when):
+    pass
+
+
+def show_weather(when, where):
+    filename = f"{where}.json"
+    weather_now = {}
+    weather = {}
+    weather_tomorrow = {}
+    data = {}
+    with open(filename, "r", encoding="utf-8") as file:
+        data = json.load(file)
+    if when == "now":
+        weather_now["time"] = data["current_weather"]["time"]
+        weather_now["temperature"] = data["current_weather"]["temperature"]
+        weather_now["winddirection"] = data["current_weather"]["winddirection"]
+        weather_now["windspeed"] = data["current_weather"]["windspeed"]
+        return weather_now
+    elif when == "today":
+        day = 0
+        weather["time"] = data["daily"]["time"][day]
+        weather["temperature"] = data["daily"]["temperature_2m_max"][day]
+        weather["winddirection"] = data["daily"]["winddirection_10m_dominant"][day]
+        weather["windspeed"] = data["daily"]["windspeed_10m_max"][day]
+        weather["rain_how_long"] = data["daily"]["precipitation_hours"][day]
+        weather["rain"] = data["daily"]["precipitation_sum"][day]
+        return weather
+    elif when == "tomorrow":
+        day = 1
+        weather["time"] = data["daily"]["time"][day]
+        weather["temperature"] = data["daily"]["temperature_2m_max"][day]
+        weather["winddirection"] = data["daily"]["winddirection_10m_dominant"][day]
+        weather["windspeed"] = data["daily"]["windspeed_10m_max"][day]
+        weather["rain_how_long"] = data["daily"]["precipitation_hours"][day]
+        weather["rain"] = data["daily"]["precipitation_sum"][day]
+        return weather
 
 
 # run
@@ -78,6 +117,8 @@ city_requests_dict = {"munich" : munich_r,
                       "haagInOberbayern" : haagInOberbayern_r
                       }
 
-print(create_file("munich"))
-add_to_dict()
-print_dict(city_requests_dict)
+# print(create_file("munich"))
+# add_to_dict()
+# print_dict(city_requests_dict)
+#
+print(show_weather("today", "munich"))
