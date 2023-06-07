@@ -4,7 +4,7 @@ import logging
 import sys
 import requests as requests
 
-# geo
+# geographical latitude and longitude
 munich = (48.15, 11.42)
 badToelz = (47.76, 11.56)
 landsbergAmLech = (48.05, 10.88)
@@ -67,7 +67,10 @@ def create_file(city: str):
         for key, value in city_requests_dict.items():
             if key == city:
                 return value
-
+    try:
+        return_city_r().status_code
+    except AttributeError:
+        print(f"false name of city")
     if return_city_r().status_code == 200:
         json.dump(return_city_r().json(), open(file_name, "w", encoding="utf-8"), indent=4, sort_keys=True)
         logging.info(f"[INFO]File {file_name} is created")
@@ -175,7 +178,7 @@ def choose_direction(start_place, when):
     winddirection_res.append(return_same_wind())
 
     res = []
-
+# proof where is better weather
     if len(rain_res) > 1:
         if len(rain_long_res) > 1:
             if set(winddirection_res) & set(rain_long_res):
