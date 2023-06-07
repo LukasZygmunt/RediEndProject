@@ -192,7 +192,7 @@ def choose_direction(start_place, when):
     else:
         res = rain_res
     for r in res:
-        print(f"The best direction to cycle {when} is/are {r}")
+        return f"The best direction to cycle {when} is/are {r}"
 
 
 # run
